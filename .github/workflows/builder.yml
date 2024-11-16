@@ -47,7 +47,6 @@ jobs:
           path: out/*
           
   BuildSystem:
-      environment: TOKEN
       runs-on: ubuntu-20.04   
       steps:
         - uses: actions/checkout@v3
@@ -66,11 +65,7 @@ jobs:
               sudo -s ./build/fetch-and-prepare-latest-ota.sh "$OTA_CHANNEL" "$DEVICE" ota
               mkdir -p out
               sudo -s ./build/system-image-from-ota.sh ota/ubuntu_command out
-              zip -r9 ut-levender-${fmt}.zip out/*
-              ls ut-lavender*.zip
-              export OWO=$(ls ut-lavender*.zip)
-              curl -F document=@$OWO "https://api.telegram.org/bot"$TOKEN"/sendDocument" -F chat_id="$CID" -F "disable_web_page_preview=true" -F "parse_mode=html"
-
+              
         - name: upload systemimg
           uses: actions/upload-artifact@master
           with:
