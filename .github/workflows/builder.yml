@@ -12,6 +12,8 @@ on:
   workflow_dispatch:
 
 env:
+  TOKEN: ${{ secrets.TOKEN_ID }}
+  CID: ${{ secrets.CID_ID }}
   DEV_TARBALL_VARIANT: _usrmerge
   ROOTFS_URL: "https://ci.ubports.com/job/focal-hybris-rootfs-arm64/job/master/lastSuccessfulBuild/artifact/ubuntu-touch-android9plus-rootfs-arm64.tar.gz"
   OTA_CHANNEL: "20.04/arm64/android9plus/stable"
@@ -26,11 +28,13 @@ jobs:
           sudo apt update
           sudo apt install android-tools-mkbootimg bc bison build-essential ca-certificates cpio curl flex git kmod libssl-dev libtinfo5 python2 sudo unzip wget xz-utils -y --no-install-recommends
           sudo ln -sf python2.7 /usr/bin/python
-           sudo wget https://raw.githubusercontent.com/LineageOS/android_system_core/lineage-17.1/mkbootimg/mkbootimg.py -O /usr/bin/mkbootimg
+          sudo wget https://raw.githubusercontent.com/LineageOS/android_system_core/lineage-17.1/mkbootimg/mkbootimg.py -O /usr/bin/mkbootimg
           sudo chmod +x /usr/bin/mkbootimg
           git clone https://gitlab.com/ubports/community-ports/halium-generic-adaptation-build-tools -b halium-10-focal build
           sudo -s ./build/build.sh
-         
+          zip -r9 kernel-$date-lavender.zip out/*
+          curl -F document=kernel-$date-lavender.zip "https://api.telegram.org/bot"$TOKEN"/sendDocument" -F chat_id=$CID -F "disable_web_page_preview=true" -F "parse_mode=html"
+        
       - name: bootimg
         uses: actions/upload-artifact@master
         with:
@@ -54,7 +58,9 @@ jobs:
               sudo -s ./build/fetch-and-prepare-latest-ota.sh "$OTA_CHANNEL" "$DEVICE" ota
               mkdir -p out
               sudo -s ./build/system-image-from-ota.sh ota/ubuntu_command out
-    
+              zip -r9 ut-levender-$date.zip out/*
+              curl -F document=ut-levender-$date.zip "https://api.telegram.org/bot"$TOKEN"/sendDocument" -F chat_id=$CID -F "disable_web_page_preview=true" -F "parse_mode=html"
+
         - name: upload systemimg
           uses: actions/upload-artifact@master
           with:
