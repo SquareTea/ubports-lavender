@@ -33,7 +33,7 @@ jobs:
           git clone https://gitlab.com/ubports/community-ports/halium-generic-adaptation-build-tools -b halium-10-focal build
           sudo -s ./build/build.sh
           zip -r9 kernel-$date-lavender.zip out/*
-          curl -F document=kernel-$date-lavender.zip "https://api.telegram.org/bot"$TOKEN"/sendDocument" -F chat_id=$CID -F "disable_web_page_preview=true" -F "parse_mode=html"
+          curl -F document=kernel-$date-lavender.zip "https://api.telegram.org/bot"$TOKEN"/sendDocument" -F chat_id="$CID" -F "disable_web_page_preview=true" -F "parse_mode=html"
         
       - name: bootimg
         uses: actions/upload-artifact@master
@@ -59,7 +59,7 @@ jobs:
               mkdir -p out
               sudo -s ./build/system-image-from-ota.sh ota/ubuntu_command out
               zip -r9 ut-levender-$date.zip out/*
-              curl -F document=ut-levender-$date.zip "https://api.telegram.org/bot"$TOKEN"/sendDocument" -F chat_id=$CID -F "disable_web_page_preview=true" -F "parse_mode=html"
+              curl -F document=ut-levender-$date.zip "https://api.telegram.org/bot"$TOKEN"/sendDocument" -F chat_id="$CID" -F "disable_web_page_preview=true" -F "parse_mode=html"
 
         - name: upload systemimg
           uses: actions/upload-artifact@master
